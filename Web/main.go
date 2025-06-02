@@ -3,7 +3,6 @@ package main
 import (
 	"com.quintindev/WebShed/config"
 	"com.quintindev/WebShed/database"
-	"com.quintindev/WebShed/models"
 	"com.quintindev/WebShed/routes"
 	"fmt"
 	"log"
@@ -17,9 +16,7 @@ func main() {
 
 	fmt.Println("Initializing and migrating database.")
 	database.Init()
-	if err := database.DB.AutoMigrate(&models.User{}); err != nil {
-		log.Fatal("AutoMigrate failed:", err)
-	}
+	database.AutoMigrations()
 
 	fmt.Println("Setting up router.")
 	router := routes.SetupRouter()

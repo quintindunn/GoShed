@@ -1,6 +1,7 @@
 package database
 
 import (
+	"com.quintindev/WebShed/models"
 	"log"
 	"os"
 
@@ -20,5 +21,19 @@ func Init() {
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
+	}
+}
+
+func AutoMigrations() {
+	if err := DB.AutoMigrate(&models.User{}); err != nil {
+		log.Fatal("AutoMigrate User failed:", err)
+	}
+
+	if err := DB.AutoMigrate(&models.RollingCode{}); err != nil {
+		log.Fatal("AutoMigrate RollingCode failed:", err)
+	}
+
+	if err := DB.AutoMigrate(&models.AllocatedCode{}); err != nil {
+		log.Fatal("AutoMigrate AllocatedCode failed:", err)
 	}
 }

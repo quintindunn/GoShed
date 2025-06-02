@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"com.quintindev/WebShed/database"
+	"com.quintindev/WebShed/models"
 	"com.quintindev/WebShed/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -34,7 +36,6 @@ type Code struct {
 }
 
 func Lock(c *gin.Context) {
-
 	rollingCodes := []Code{
 		{
 			Name:   "",
@@ -58,8 +59,11 @@ func Lock(c *gin.Context) {
 		},
 	}
 
+	var allocatedCodes []models.AllocatedCode
+	database.DB.Find(&allocatedCodes)
+
 	var formattedCodes []gin.H
-	for _, code := range codes {
+	for _, code := range allocatedCodes {
 		formattedCodes = append(formattedCodes, gin.H{
 			"name":   code.Name,
 			"code":   code.Code,
@@ -104,7 +108,7 @@ func SetLockAPI(c *gin.Context) {
 }
 
 func ResetRollingCodesAPI(c *gin.Context) {
-	codes := []Code{}
+	var codes []Code
 
 	const codeCount = 5
 	now := time.Now()
@@ -132,6 +136,8 @@ func AddUserCodeAPI(c *gin.Context) {
 		return
 	}
 
+	json.Expiry /= 1000
+
 	//if (payload.code.length < 4 || payload.code.length > 32) {
 	length := len(json.Code)
 
@@ -141,8 +147,21 @@ func AddUserCodeAPI(c *gin.Context) {
 
 	now := time.Now()
 
-	if json.Expiry/1000 < now.Unix() {
+	if json.Expiry < now.Unix() {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "code expiry must be greater than or equal to current time"})
+	}
+
+	var allocatedCodes []models.AllocatedCode
+	database.DB.Find(&allocatedCodes)
+
+	var codes []Code
+
+	for _, code := range allocatedCodes {
+		codes = append(codes, Code{
+			Name:   code.Name,
+			Code:   code.Code,
+			Expiry: code.Expiry,
+		})
 	}
 
 	codes = append(codes, json)
@@ -151,4 +170,15 @@ func AddUserCodeAPI(c *gin.Context) {
 	})
 
 	fmt.Printf("locks.go TEMPORARY - Adding User Code: %+v\n", json)
+
+	CodeModel := models.AllocatedCode{
+		Name:      json.Name,
+		Code:      json.Code,
+		Expiry:    json.Expiry,
+		Nullified: false,
+	}
+
+	if err := database.DB.Create(&CodeModel).Error; err != nil {
+		fmt.Println("Error adding code!")
+	}
 }

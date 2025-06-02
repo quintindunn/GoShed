@@ -1,0 +1,30 @@
+{{ define "register" }}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<div>
+    <div>
+        <h2>Create Account</h2>
+        {{ if .Error }}
+        <div>{{ .Error }}</div>
+        {{ end }}
+        <form method="POST" action="/register">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required placeholder="Name"/>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="Email"/>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required placeholder="Password"/>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+{{ end }}

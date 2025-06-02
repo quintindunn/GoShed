@@ -15,8 +15,24 @@ func SetupRouter() *gin.Engine {
 
 	r.LoadHTMLGlob("templates/*")
 
-	r.GET("/", controllers.Page)
-	r.GET("/api", controllers.Home)
+	// Public routes
+	r.GET("/login", controllers.LoginPage)
+	r.POST("/login", controllers.LoginSubmit)
+
+	r.GET("/register", controllers.RegisterPage)
+	r.POST("/register", controllers.Register)
+
+	r.POST("/api/login", controllers.LoginAPI)
+	r.POST("/api/register", controllers.Register)
+
+	r.GET("/logout", controllers.Logout)
+
+	authorized := r.Group("/")
+	authorized.Use(middleware.AuthRequired())
+	{
+		authorized.GET("/", controllers.Page)
+		authorized.GET("/users", controllers.ListUsers)
+	}
 
 	return r
 }

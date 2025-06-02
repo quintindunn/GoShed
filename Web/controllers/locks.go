@@ -6,28 +6,11 @@ import (
 	"com.quintindev/WebShed/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"math/rand"
 	"net/http"
 	"time"
 )
-
-var codes = []Code{
-	{
-		Name:   "Temporary1",
-		Code:   "987654",
-		Expiry: 1750000000,
-	},
-	{
-		Name:   "Temporary2",
-		Code:   "456789",
-		Expiry: 1760000000,
-	},
-	{
-		Name:   "Temporary3",
-		Code:   "654987",
-		Expiry: 1770000000,
-	},
-}
 
 type Code struct {
 	Name   string `json:"name"`
@@ -36,46 +19,58 @@ type Code struct {
 }
 
 func Lock(c *gin.Context) {
-	rollingCodes := []Code{
-		{
+	var ModelRollingCodes []models.RollingCode
+	database.DB.Find(&ModelRollingCodes, "nullified = ?", false)
+
+	var RollingCodes []Code
+	for _, code := range ModelRollingCodes {
+		RollingCodes = append(RollingCodes, Code{
 			Name:   "",
-			Code:   "424242",
-			Expiry: 1750000000,
-		},
-		{
-			Name:   "",
-			Code:   "242424",
-			Expiry: 1750000000,
-		},
-		{
-			Name:   "",
-			Code:   "131313",
-			Expiry: 1750000000,
-		},
-		{
-			Name:   "",
-			Code:   "313131",
-			Expiry: 1750000000,
-		},
+			Code:   code.Code,
+			Expiry: code.Expiry,
+		})
 	}
 
+	//rollingCodes := []Code{
+	//	{
+	//		Name:   "",
+	//		Code:   "424242",
+	//		Expiry: 1750000000,
+	//	},
+	//	{
+	//		Name:   "",
+	//		Code:   "242424",
+	//		Expiry: 1750000000,
+	//	},
+	//	{
+	//		Name:   "",
+	//		Code:   "131313",
+	//		Expiry: 1750000000,
+	//	},
+	//	{
+	//		Name:   "",
+	//		Code:   "313131",
+	//		Expiry: 1750000000,
+	//	},
+	//}
+
 	var allocatedCodes []models.AllocatedCode
-	database.DB.Find(&allocatedCodes)
+	database.DB.Find(&allocatedCodes, "nullified = ?", false)
 
 	var formattedCodes []gin.H
 	for _, code := range allocatedCodes {
 		formattedCodes = append(formattedCodes, gin.H{
 			"name":   code.Name,
 			"code":   code.Code,
-			"expiry": time.Unix(int64(code.Expiry), 0).Format("01-02-06 3:04 PM"),
+			"expiry": time.Unix(code.Expiry, 0).Format("01-02-06 3:04 PM"),
 		})
 	}
 
 	var formattedRollingCodes []gin.H
-	for _, code := range rollingCodes {
+	for _, code := range RollingCodes {
 		formattedRollingCodes = append(formattedRollingCodes, gin.H{
 			"code":   code.Code,
-			"expiry": time.Unix(int64(code.Expiry), 0).Format("01-02-06 3:04 PM"),
+			"expiry": time.Unix(code.Expiry, 0).Format("01-02-06 3:04 PM"),
 		})
 	}
 
@@ -119,8 +114,26 @@ func ResetRollingCodesAPI(c *gin.Context) {
 		codes = append(codes, Code{
 			Name:   "",
 			Code:   str,
-			Expiry: now.Unix(),
+			Expiry: now.Unix() + 86400,
 		})
+	}
+
+	var ModelRollingCodes []models.RollingCode
+
+	for _, c := range codes {
+		ModelRollingCodes = append(ModelRollingCodes, models.RollingCode{
+			Code:      c.Code,
+			Expiry:    c.Expiry,
+			Nullified: false,
+		})
+	}
+
+	if err := database.DB.Model(&models.RollingCode{}).Where("nullified = ?", false).Update("nullified", true).Error; err != nil {
+		fmt.Println("Failed to nullify codes!")
+	}
+
+	if err := database.DB.Create(&ModelRollingCodes).Error; err != nil {
+		log.Println("Failed to insert rolling codes:", err)
 	}
 
 	c.JSON(200, gin.H{
@@ -152,7 +165,7 @@ func AddUserCodeAPI(c *gin.Context) {
 	}
 
 	var allocatedCodes []models.AllocatedCode
-	database.DB.Find(&allocatedCodes)
+	database.DB.Find(&allocatedCodes, "nullified = ?", false)
 
 	var codes []Code
 

@@ -1,5 +1,7 @@
 {{ define "content" }}
-    <h1>This shouldn't be global, but it is: MUST FIX!</h1>
+    {{ if .block_locks }}
+        <h1>This is no longer global!</h1>
+    {{ end }}
 {{ end }}
 
 {{ define "locks" }}

@@ -87,3 +87,53 @@ h1 > a {
     grid-area: 2 / 2 / 6 / 6;
     height: 100%;
 }
+
+/* login.html, register.html */
+.authentication-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 70%;
+    justify-content: center;
+    align-content: center;
+}
+
+.authentication-block > * {
+    margin: 0 auto;
+}
+
+.authentication-block > form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.authentication-block > form > input {
+    width: 20vw;
+    height: 1.5rem;
+}
+
+.authentication-block > form > button[type="submit"] {
+    height: 1.5rem;
+    border: 1px solid aqua;
+    background-color: transparent;
+    color: aqua;
+    margin-top: 2vh;
+    border-radius: 15px;
+}
+
+.authentication-block > form > button[type="submit"]:hover {
+    scale: 1.075;
+    cursor: pointer;
+}
+
+.authentication-block > .authentication-error {
+    color: red;
+}
+
+.authentication-block > form {
+    padding: 4vh 4vw;
+    background-color: var(--fg-color);
+    border-radius: 15px;
+}

@@ -1,28 +1,21 @@
-{{ define "login" }}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-</head>
-<body>
-<div>
-    <div>
+{{ define "content_login" }}
+<div class="authentication-block">
+    <form method="POST" action="/login">
         <h2>Login</h2>
         {{ if .Error }}
-        <div>{{ .Error }}</div>
+        <div class="authentication-error">{{ .Error }}</div>
         {{ end }}
-        <form method="POST" action="/login">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required placeholder="Email"/>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required placeholder="Email"/>
 
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required placeholder="Password"/>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="Password"/>
 
-            <button type="submit">Sign In</button>
-        </form>
-    </div>
+        <button type="submit">Sign In</button>
+    </form>
 </div>
-</body>
-</html>
+{{ end }}
+
+{{ define "login" }}
+{{ template "base" . }}
 {{ end }}

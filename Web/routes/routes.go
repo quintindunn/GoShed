@@ -15,7 +15,6 @@ func SetupRouter() *gin.Engine {
 
 	r.LoadHTMLGlob("templates/*")
 
-	// Public routes
 	r.GET("/login", controllers.LoginPage)
 	r.POST("/login", controllers.LoginSubmit)
 
@@ -32,6 +31,7 @@ func SetupRouter() *gin.Engine {
 	{
 		authorized.GET("/", controllers.Page)
 		authorized.GET("/users", controllers.ListUsers)
+		authorized.GET("/locks", controllers.Lock)
 	}
 
 	return r

@@ -1,0 +1,89 @@
+:root {
+    --fg-color: rgb(35, 35, 40);
+    --bg-color: rgb(25, 26, 27);
+    --base-txt-color: #f8f6f6;
+    --selected-txt-color: #ffffff
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    background-color: var(--bg-color);
+}
+
+main {
+    display: grid;
+    grid-template-columns: 15vw repeat(4, 1fr);
+    grid-template-rows: 10vh repeat(4, 1fr);
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+
+    color: var(--base-txt-color);
+
+    font-family: "JetBrains Mono", "Arial Blacsk", "serif";
+}
+
+h1 > a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.header {
+    padding: 5px 5px 5px 1vw;
+
+    background-color: var(--fg-color);
+    grid-area: 1 / 1 / 2 / 6;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.header > * {
+    margin: auto 0;
+}
+
+.header > .profile {
+    margin: auto 1vw auto auto;
+}
+
+.header > .profile {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5vw;
+}
+
+.header > .profile > a {
+    color: var(--selected-txt-color);
+}
+
+
+.tabs {
+    padding: 1vw;
+    margin-top: 5px;
+    background-color: var(--fg-color);
+    grid-area: 2 / 1 / 6 / 2;
+    height: 85vh;
+}
+
+.tabs > h1 {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.tabs > ul > li > a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.tabs > ul > li[data-active="true"] > a {
+    color: var(--selected-txt-color);
+    text-decoration: inherit;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.page-content {
+    padding: 5px 5px 5px 1vw;
+    grid-area: 2 / 2 / 6 / 6;
+    height: 100%;
+}

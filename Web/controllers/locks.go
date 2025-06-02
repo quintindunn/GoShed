@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Page(c *gin.Context) {
+func Lock(c *gin.Context) {
 	data := gin.H{}
-	utils.Render(c, 200, "home", data)
+	utils.Render(c, 200, "locks", data)
 }

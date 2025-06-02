@@ -4,10 +4,38 @@
 <head>
   <meta charset="UTF-8">
   <title>{{ .Title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/base.css">
 </head>
 <body>
-  {{ block "content" . }}{{ end }}
+  <main>
+    <div class="header">
+      <div class="title">
+        <h1><a href="/">WebShed Admin</a></h1>
+      </div>
+      <div class="profile">
+        {{ with .CurrentUser }}
+          <p>Hello{{ if .Name }} {{ .Name }}{{ end }}</p>
+          <a href="/logout"><p>Logout</p></a>
+        {{ end }}
+      </div>
+
+    </div>
+    <div class="tabs">
+      <h1><a href="/">Pages</a></h1>
+      <hr>
+      <ul>
+        <li data-active="false"><a href="#logs">Logs</a></li>
+        <li data-active="true"><a href="/locks">Lock</a></li>
+        <li data-active="false"><a href="/users">Users</a></li>
+      </ul>
+    </div>
+    <div class="page-content">
+      {{ block "content" . }}{{ end }}
+    </div>
+  </main>
 </body>
 </html>
 {{ end }}

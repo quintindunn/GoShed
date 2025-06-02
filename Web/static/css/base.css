@@ -188,6 +188,11 @@ th, td {
     padding: 8px;
 }
 
+.error-div {
+    color: red;
+    font-size: 0.8rem;
+}
+
 .add-user {
     margin-top: 2vh;
 }

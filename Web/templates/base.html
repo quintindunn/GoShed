@@ -17,7 +17,7 @@
       </div>
       <div class="profile">
         {{ with .CurrentUser }}
-          <p>Hello{{ if .Name }} {{ .Name }}{{ end }}</p>
+          <p>Hello{{ if .Name }}, {{ .Name }}{{ end }}</p>
           <a href="/logout"><p>Logout</p></a>
         {{ end }}
       </div>

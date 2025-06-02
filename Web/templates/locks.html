@@ -1,9 +1,10 @@
 {{ define "content_locks" }}
+    <script src="/static/javascript/lockdriver.js" defer></script>
     <div class="sub-app lock-manager">
         <h1>Lock Controller</h1>
         <hr>
         <h2>Manage Lock</h2>
-        <h3>Current State: <span data-locked="false">UNLOCKED</span></h3>
+        <h3>Current State: <span data-locked="{{ .isLocked }}" id="lock-state-span">{{ if .isLocked }}LOCKED{{ else }}UNLOCKED{{ end}}</span></h3>
         <div class="controls">
             <button type="button" id="lock-manager-lock">LOCK</button>
             <button type="button" id="lock-manager-unlock">UNLOCK</button>
@@ -12,23 +13,13 @@
             <hr>
             <h2>Rolling Codes</h2>
             <button id="rolling-codes-reset">Reset Codes</button>
-            <div class="code-cards">
+            <div class="code-cards" id="cards-div">
+                {{ range .rollingCodes }}
                 <div class="code-card">
-                    <h2>4242</h2>
-                    <p>Expires 06-02-25 12:00 AM</p>
+                    <h2>{{ .code }}</h2>
+                    <p>Expires {{ .expiry }}</p>
                 </div>
-                <div class="code-card">
-                    <h2>2424</h2>
-                    <p>Expires 06-02-25 12:00 AM</p>
-                </div>
-                <div class="code-card">
-                    <h2>2121</h2>
-                    <p>Expires 06-02-25 12:00 AM</p>
-                </div>
-                <div class="code-card">
-                    <h2>1212</h2>
-                    <p>Expires 06-02-25 12:00 AM</p>
-                </div>
+                {{ end }}
             </div>
         </div>
         <hr>
@@ -39,31 +30,22 @@
                 <th>Code</th>
                 <th>Expiration</th>
             </tr>
+            {{ range .codes }}
             <tr>
-                <td>Sample</td>
-                <td>9142</td>
-                <td>06-05-25 11:54 AM</td>
+                <td>{{ .name }}</td>
+                <td>{{ .code }}</td>
+                <td>{{ .expiry }}</td>
             </tr>
-            <tr>
-                <td>Sample2</td>
-                <td>2419</td>
-                <td>05-06-25 11:54 PM</td>
-            </tr>
-            <tr>
-                <td>Sample</td>
-                <td>9142</td>
-                <td>06-05-25 11:54 AM</td>
-            </tr>
-            <tr>
-                <td>Sample2</td>
-                <td>2419</td>
-                <td>05-06-25 11:54 PM</td>
-            </tr>
+            {{ end }}
             <tbody>
 
             </tbody>
         </table>
         <div class="add-user">
+            <div id="error-div" class="error-div" data-hidden="true">
+
+            </div>
+
             <label for="add-user-name">Name</label>
             <input type="text" name="name" placeholder="John Doe" id="add-user-name" required>
 

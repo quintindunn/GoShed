@@ -1,5 +1,6 @@
 :root {
     --fg-color: rgb(35, 35, 40);
+    --fg-secondary: rgb(45, 45, 50);
     --bg-color: rgb(25, 26, 27);
     --base-txt-color: #f8f6f6;
     --selected-txt-color: #ffffff
@@ -136,4 +137,102 @@ h1 > a {
     padding: 4vh 4vw;
     background-color: var(--fg-color);
     border-radius: 15px;
+}
+
+/* locks.html */
+.sub-app {
+    padding: 4vh 4vw;
+    background-color: var(--fg-color);
+    border-radius: 15px;
+}
+
+.lock-manager {
+
+}
+.lock-manager > h3 > span {
+    color: red;
+}
+
+.lock-manager > h3 > span[data-locked="true"] {
+    color: green;
+}
+
+.lock-manager > .controls {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.lock-manager > .controls > button {
+    padding: 1vh 1vw;
+    border-radius: 15px;
+    font-weight: bold;
+}
+
+.lock-manager > .controls > button:hover {
+    cursor: pointer;
+    scale: 1.05;
+}
+
+.lock-manager > hr {
+    margin-top: 2vh;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+.add-user {
+    margin-top: 2vh;
+}
+
+.add-user > input {
+    padding: .5vh .5vw;
+}
+
+.add-user > input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
+.add-user > input::-webkit-outer-spin-button,
+.add-user input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+.rolling-codes > button {
+    padding: .5vh .5vw;
+    border-radius: 15px;
+    margin-bottom: 1vh;
+    font-weight: bold;
+}
+
+.rolling-codes > button:hover {
+    cursor: pointer;
+}
+
+.rolling-codes > .code-cards {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.rolling-codes > .code-cards > .code-card {
+    background-color: var(--fg-secondary);
+    margin: 0 auto;
+    text-align: center;
+    padding: 1vh 1vw;
+    scale: 0.9;
+    border-radius: 15px;
+}
+
+.rolling-codes > .code-cards > .code-card:hover {
+    scale: 1;
 }

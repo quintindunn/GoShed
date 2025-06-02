@@ -1,5 +1,80 @@
 {{ define "content_locks" }}
-    <h1>This is no longer global!</h1>
+    <div class="sub-app lock-manager">
+        <h1>Lock Controller</h1>
+        <hr>
+        <h2>Manage Lock</h2>
+        <h3>Current State: <span data-locked="false">UNLOCKED</span></h3>
+        <div class="controls">
+            <button type="button" id="lock-manager-lock">LOCK</button>
+            <button type="button" id="lock-manager-unlock">UNLOCK</button>
+        </div>
+        <div class="rolling-codes">
+            <hr>
+            <h2>Rolling Codes</h2>
+            <button id="rolling-codes-reset">Reset Codes</button>
+            <div class="code-cards">
+                <div class="code-card">
+                    <h2>4242</h2>
+                    <p>Expires 06-02-25 12:00 AM</p>
+                </div>
+                <div class="code-card">
+                    <h2>2424</h2>
+                    <p>Expires 06-02-25 12:00 AM</p>
+                </div>
+                <div class="code-card">
+                    <h2>2121</h2>
+                    <p>Expires 06-02-25 12:00 AM</p>
+                </div>
+                <div class="code-card">
+                    <h2>1212</h2>
+                    <p>Expires 06-02-25 12:00 AM</p>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h2>Allocated Codes</h2>
+        <table class="allocated-codes">
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Expiration</th>
+            </tr>
+            <tr>
+                <td>Sample</td>
+                <td>9142</td>
+                <td>06-05-25 11:54 AM</td>
+            </tr>
+            <tr>
+                <td>Sample2</td>
+                <td>2419</td>
+                <td>05-06-25 11:54 PM</td>
+            </tr>
+            <tr>
+                <td>Sample</td>
+                <td>9142</td>
+                <td>06-05-25 11:54 AM</td>
+            </tr>
+            <tr>
+                <td>Sample2</td>
+                <td>2419</td>
+                <td>05-06-25 11:54 PM</td>
+            </tr>
+            <tbody>
+
+            </tbody>
+        </table>
+        <div class="add-user">
+            <label for="add-user-name">Name</label>
+            <input type="text" name="name" placeholder="John Doe" id="add-user-name" required>
+
+            <label for="add-user-code">Code</label>
+            <input type="number" name="code" placeholder="4242" id="add-user-code" required>
+
+            <label for="add-user-expiration">Expiration</label>
+            <input type="datetime-local" name="expiration" id="add-user-expiration">
+            <button type="button" id="add-user-btn">Add Code</button>
+        </div>
+    </div>
 {{ end }}
 
 {{ define "locks" }}

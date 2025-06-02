@@ -1,0 +1,4 @@
+POST http://localhost:80/api/lock
+Content-Type: application/json
+
+{"isLocked":true}

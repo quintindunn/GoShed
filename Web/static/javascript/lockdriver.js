@@ -18,10 +18,10 @@ function postLockState(lock) {
     xhr.open("POST", "/api/lock");
 
     xhr.onreadystatechange = () => {
-        // if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             lockStateElem.innerText = lock ? "LOCKED" : "UNLOCKED"
             lockStateElem.dataset.locked = lock ? "true" : "false"
-        // }
+        }
     };
     xhr.setRequestHeader("Content-Type", "Application/json;charset=UTF-8");
     xhr.send(JSON.stringify(payload));
@@ -40,17 +40,28 @@ function resetCards() {
     xhr.open("POST", "/api/refreshCards");
 
     xhr.onreadystatechange = () => {
-        // if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            console.log("Cards refreshed")
-            updateCardsDisplay([[1234, 1748884667912], [4321, 1748884667912], [4242, 1748884667912], [2424, 1748884667912]]);
-        // }
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            let body = JSON.parse(xhr.response);
+            let rollingCodes = body["rollingCodes"];
+            let codes = []
+
+            for (let i = 0; i < rollingCodes.length; i++) {
+                console.log(rollingCodes[i])
+                const code = rollingCodes[i];
+                codes.push([
+                    code["code"],
+                    code["expiry"] * 1000
+                ]);
+            }
+            console.log(codes);
+            updateCardsDisplay(codes);
+        }
     }
 
     xhr.send();
 }
 
-function addCard(code, expiry) {
-    let date = new Date(expiry);
+function formatDt(date) {
     const pad = (n) => n.toString().padStart(2, '0');
 
     const month = pad(date.getMonth() + 1);
@@ -63,7 +74,12 @@ function addCard(code, expiry) {
     hours = hours % 12 || 12;
     const formattedHours = pad(hours);
 
-    expiry = `${month}-${day}-${year} ${formattedHours}:${minutes} ${ampm}`;
+    return `${month}-${day}-${year} ${formattedHours}:${minutes} ${ampm}`;
+}
+
+function addCard(code, expiry) {
+    let date = new Date(expiry);
+    expiry = formatDt(date)
 
     let card = document.createElement("div");
     card.classList.add("code-card");
@@ -95,11 +111,39 @@ const addUserName = document.getElementById("add-user-name");
 const addUserCode = document.getElementById("add-user-code");
 const addUserExpiry = document.getElementById("add-user-expiration");
 const addUserBtn = document.getElementById("add-user-btn");
+const addUserTable = document.getElementById("add-user-table")
 
 function addError(errorDiv, err) {
     let err_elem = document.createElement("p");
     err_elem.innerText = err
     errorDiv.appendChild(err_elem);
+}
+
+function resetUserTable() {
+    addUserTable.innerHTML = ``;
+    const row = document.createElement("tr");
+    const td1 = document.createElement("th");
+    td1.innerText = "Name";
+    const td2 = document.createElement("th");
+    td2.innerText = "Code";
+    const td3 = document.createElement("th");
+    td3.innerText = "Expiration";
+}
+
+function addUser(name, code, expiry) {
+    const row = document.createElement("tr");
+    const td1 = document.createElement("td");
+    td1.innerText = name;
+    const td2 = document.createElement("td");
+    td2.innerText = code
+    const td3 = document.createElement("td");
+    td3.innerText = formatDt(expiry)
+
+    row.appendChild(td1);
+    row.appendChild(td2);
+    row.appendChild(td3);
+
+    addUserTable.appendChild(row);
 }
 
 function handleAddUser() {
@@ -133,7 +177,7 @@ function handleAddUser() {
 
     for (let i = 0; i < payload.code.length; i++) {
         const char = payload.code[i];
-        if (!(char in "0987654321")) {
+        if (!(char in ["0", "9", "8", "7", "6", "5", "4", "3", "2", "1"])) {
             addError(errorDiv, "Invalid Code.");
             return;
         }
@@ -143,6 +187,27 @@ function handleAddUser() {
         addError(errorDiv, "Code must be between 4 and 32.")
     }
 
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/addUserCode");
+
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            const body = JSON.parse(xhr.response);
+            const authorized_users = body["authorizedCodes"];
+
+            resetUserTable();
+            for (let i = 0; i < authorized_users.length; i++) {
+                let user = authorized_users[i];
+                addUser(user["name"], user["code"], new Date(user["expiry"] * 1000))
+            }
+
+
+            console.log(body);
+            // addUser()
+        }
+    }
+
+    xhr.send(JSON.stringify(payload));
 }
 
 addUserBtn.addEventListener("click", handleAddUser);

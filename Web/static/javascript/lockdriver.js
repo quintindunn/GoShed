@@ -128,6 +128,12 @@ function resetUserTable() {
     td2.innerText = "Code";
     const td3 = document.createElement("th");
     td3.innerText = "Expiration";
+
+    row.appendChild(td1);
+    row.appendChild(td2);
+    row.appendChild(td3);
+
+    addUserTable.appendChild(row);
 }
 
 function addUser(name, code, expiry, uuid) {

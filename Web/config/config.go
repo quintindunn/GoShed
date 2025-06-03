@@ -5,9 +5,11 @@ import (
 )
 
 const DefaultPort = "80"
+const DefaultBackendPort = "6342"
 
 type Config struct {
-	Port string
+	Port        string
+	BackendPort string
 }
 
 func Load() *Config {
@@ -15,7 +17,14 @@ func Load() *Config {
 	if port == "" {
 		port = DefaultPort
 	}
+
+	backendPort := os.Getenv("BACKENDPORT")
+	if backendPort == "" {
+		backendPort = DefaultBackendPort
+	}
+
 	return &Config{
-		Port: port,
+		Port:        port,
+		BackendPort: backendPort,
 	}
 }

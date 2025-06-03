@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting WebShed.")
+	fmt.Println("Starting APIShed.")
 
 	fmt.Println("Loading config.")
 	cfg := config.Load()

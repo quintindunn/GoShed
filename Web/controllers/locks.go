@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"com.quintindev/WebShed/database"
+	"com.quintindev/WebShed/hardwareInterface"
 	"com.quintindev/WebShed/models"
 	"com.quintindev/WebShed/utils"
 	"github.com/google/uuid"
@@ -34,29 +35,6 @@ func Lock(c *gin.Context) {
 		})
 	}
 
-	//rollingCodes := []Code{
-	//	{
-	//		Name:   "",
-	//		Code:   "424242",
-	//		Expiry: 1750000000,
-	//	},
-	//	{
-	//		Name:   "",
-	//		Code:   "242424",
-	//		Expiry: 1750000000,
-	//	},
-	//	{
-	//		Name:   "",
-	//		Code:   "131313",
-	//		Expiry: 1750000000,
-	//	},
-	//	{
-	//		Name:   "",
-	//		Code:   "313131",
-	//		Expiry: 1750000000,
-	//	},
-	//}
-
 	var allocatedCodes []models.AllocatedCode
 	database.DB.Find(&allocatedCodes, "nullified = ?", false)
 
@@ -81,7 +59,7 @@ func Lock(c *gin.Context) {
 	data := gin.H{
 		"codes":        formattedCodes,
 		"rollingCodes": formattedRollingCodes,
-		"isLocked":     false,
+		"isLocked":     hardwareInterface.GetGetLocked(),
 	}
 
 	utils.Render(c, 200, "locks", data)
@@ -99,7 +77,7 @@ func SetLockAPI(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("locks.go TEMPORARY - IsLocked: %v\n", json.SetLocked)
+	hardwareInterface.PostSetLock(json.SetLocked)
 
 	c.JSON(200, gin.H{
 		"isLocked": json.SetLocked,

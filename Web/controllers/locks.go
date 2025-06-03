@@ -23,6 +23,8 @@ type Code struct {
 }
 
 func Lock(c *gin.Context) {
+	hardwareInterface.GetExpiredCodes()
+
 	var ModelRollingCodes []models.RollingCode
 	database.DB.Find(&ModelRollingCodes, "nullified = ?", false)
 

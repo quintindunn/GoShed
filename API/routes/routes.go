@@ -14,5 +14,7 @@ func SetupRouter() *gin.Engine {
 	r.POST("/api/setlock", controllers.SetLock)
 	r.GET("/api/getlocked", controllers.GetLocked)
 
+	r.GET("/api/expireoldcodes", controllers.ExpireOldCodes)
+
 	return r
 }

@@ -1,22 +1,26 @@
-package main
+package controllers
 
 import (
-	"com.quintindev/CronShed/database"
-	"com.quintindev/CronShed/models"
+	"com.quintindev/APIShed/database"
+	"com.quintindev/APIShed/models"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"log"
 	"math/rand"
 	"time"
 )
 
-func main() {
-	database.Init()
-	database.AutoMigrations()
-	updateExpiredRollingCodes()
-	nullifyAllocatedCodes()
+func ExpireOldCodes(c *gin.Context) {
+	rollingCodesChanged := updateExpiredRollingCodes()
+	allocatedCodesChanged := nullifyAllocatedCodes()
+
+	c.JSON(200, gin.H{
+		"rollingCodesChanged":   rollingCodesChanged,
+		"allocatedCodesChanged": allocatedCodesChanged,
+	})
 }
 
-func updateExpiredRollingCodes() {
+func updateExpiredRollingCodes() int {
 	unix := time.Now().Unix()
 
 	var expiredModels []models.RollingCode
@@ -44,18 +48,19 @@ func updateExpiredRollingCodes() {
 	}
 
 	if len(ModelRollingCodes) == 0 {
-		log.Println("No rolling codes expired!")
-		return
+		return 0
 	}
 
 	if err := database.DB.Create(&ModelRollingCodes).Error; err != nil {
 		log.Println("Failed to insert rolling codes:", err)
+		return -1
 	} else {
-		log.Printf("Inserted %d rolling codes!\n", nullifiedRollingCodesCount)
+		return nullifiedRollingCodesCount
 	}
+	return nullifiedRollingCodesCount
 }
 
-func nullifyAllocatedCodes() {
+func nullifyAllocatedCodes() int {
 	unix := time.Now().Unix()
 
 	var expiredModels []models.AllocatedCode
@@ -69,9 +74,5 @@ func nullifyAllocatedCodes() {
 		database.DB.Model(&model).Update("nullified", true)
 	}
 
-	if nullifiedAllocatedCodesCount == 0 {
-		log.Println("No allocated codes expired!")
-	} else {
-		log.Printf("Nullified %d allocated codes!\n", nullifiedAllocatedCodesCount)
-	}
+	return nullifiedAllocatedCodesCount
 }

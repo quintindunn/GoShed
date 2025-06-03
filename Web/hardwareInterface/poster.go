@@ -89,3 +89,7 @@ func GetGetLocked() bool {
 
 	return newState
 }
+
+func GetExpiredCodes() {
+	GetJSON("/api/expireoldcodes")
+}

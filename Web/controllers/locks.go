@@ -4,6 +4,8 @@ import (
 	"com.quintindev/WebShed/database"
 	"com.quintindev/WebShed/models"
 	"com.quintindev/WebShed/utils"
+	"github.com/google/uuid"
+
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -16,6 +18,7 @@ type Code struct {
 	Name   string `json:"name"`
 	Code   string `json:"code"`
 	Expiry int64  `json:"expiry"`
+	Uuid   string `json:"uuid"`
 }
 
 func Lock(c *gin.Context) {
@@ -63,6 +66,7 @@ func Lock(c *gin.Context) {
 			"name":   code.Name,
 			"code":   code.Code,
 			"expiry": time.Unix(code.Expiry, 0).Format("01-02-06 3:04 PM"),
+			"UUID":   code.UUID,
 		})
 	}
 
@@ -174,24 +178,70 @@ func AddUserCodeAPI(c *gin.Context) {
 			Name:   code.Name,
 			Code:   code.Code,
 			Expiry: code.Expiry,
+			Uuid:   code.UUID,
 		})
 	}
+	id := uuid.New()
 
+	json.Uuid = id.String()
 	codes = append(codes, json)
 	c.JSON(200, gin.H{
 		"authorizedCodes": codes,
 	})
 
 	fmt.Printf("locks.go TEMPORARY - Adding User Code: %+v\n", json)
-
 	CodeModel := models.AllocatedCode{
 		Name:      json.Name,
 		Code:      json.Code,
 		Expiry:    json.Expiry,
 		Nullified: false,
+		UUID:      json.Uuid,
 	}
 
 	if err := database.DB.Create(&CodeModel).Error; err != nil {
 		fmt.Println("Error adding code!")
 	}
+}
+
+type NullifyCodeRequest struct {
+	Uuid string `json:"uuid"`
+}
+
+func NullifyUserCode(c *gin.Context) {
+	var json NullifyCodeRequest
+
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+
+	targetUuid := json.Uuid
+
+	if targetUuid == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID"})
+	}
+
+	if err := database.DB.Model(&models.AllocatedCode{}).
+		Where("nullified = ?", false).
+		Where("uuid = ?", targetUuid).
+		Update("nullified", true).Error; err != nil {
+		fmt.Printf("Error nullifying allocated code with UUID %s", targetUuid)
+	}
+
+	var allocatedCodes []models.AllocatedCode
+	database.DB.Find(&allocatedCodes, "nullified = ?", false)
+
+	var codes []Code
+
+	for _, code := range allocatedCodes {
+		codes = append(codes, Code{
+			Name:   code.Name,
+			Code:   code.Code,
+			Expiry: code.Expiry,
+			Uuid:   code.UUID,
+		})
+	}
+
+	c.JSON(200, gin.H{
+		"authorizedCodes": codes,
+	})
 }

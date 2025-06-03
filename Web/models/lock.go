@@ -7,6 +7,7 @@ type RollingCode struct {
 	Code      string `gorm:"not null"`
 	Expiry    int64  `gorm:"not null"`
 	Nullified bool   `gorm:"not null;default:false"`
+	UUID      string `gorm:"not null;default:''"`
 }
 
 type AllocatedCode struct {
@@ -15,4 +16,5 @@ type AllocatedCode struct {
 	Code      string `gorm:"not null"`
 	Expiry    int64  `gorm:"not null"`
 	Nullified bool   `gorm:"not null;default:false"`
+	UUID      string `gorm:"not null;default:''"`
 }

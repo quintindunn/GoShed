@@ -130,20 +130,42 @@ function resetUserTable() {
     td3.innerText = "Expiration";
 }
 
-function addUser(name, code, expiry) {
+function addUser(name, code, expiry, uuid) {
     const row = document.createElement("tr");
     const td1 = document.createElement("td");
     td1.innerText = name;
     const td2 = document.createElement("td");
-    td2.innerText = code
+    td2.innerText = code;
     const td3 = document.createElement("td");
-    td3.innerText = formatDt(expiry)
+    td3.innerText = formatDt(expiry);
+    const td4 = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.value = uuid;
+    btn.onclick = () => {handleDeleteUser(btn)};
+    btn.innerText = "X";
+
+    td4.appendChild(btn);
 
     row.appendChild(td1);
     row.appendChild(td2);
     row.appendChild(td3);
+    row.appendChild(td4);
 
     addUserTable.appendChild(row);
+}
+
+function updateAuthorizedCode(xhr) {
+    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        const body = JSON.parse(xhr.response);
+        const authorized_users = body["authorizedCodes"];
+
+        resetUserTable();
+        for (let i = 0; i < authorized_users.length; i++) {
+            let user = authorized_users[i];
+            addUser(user["name"], user["code"], new Date(user["expiry"] * 1000), user["uuid"])
+        }
+    }
 }
 
 function handleAddUser() {
@@ -190,24 +212,25 @@ function handleAddUser() {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/addUserCode");
 
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            const body = JSON.parse(xhr.response);
-            const authorized_users = body["authorizedCodes"];
-
-            resetUserTable();
-            for (let i = 0; i < authorized_users.length; i++) {
-                let user = authorized_users[i];
-                addUser(user["name"], user["code"], new Date(user["expiry"] * 1000))
-            }
-
-
-            console.log(body);
-            // addUser()
-        }
-    }
+    xhr.onreadystatechange = () => {updateAuthorizedCode(xhr)}
 
     xhr.send(JSON.stringify(payload));
+}
+
+function handleDeleteUser(elem) {
+    let uuid_to_rm = elem.value;
+
+    let payload = {
+        uuid: uuid_to_rm
+    }
+
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/nullifyUserCode");
+
+    xhr.onreadystatechange = () => {updateAuthorizedCode(xhr)}
+
+    xhr.send(JSON.stringify(payload))
 }
 
 addUserBtn.addEventListener("click", handleAddUser);

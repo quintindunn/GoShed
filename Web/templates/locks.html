@@ -35,6 +35,9 @@
                 <td>{{ .name }}</td>
                 <td>{{ .code }}</td>
                 <td>{{ .expiry }}</td>
+                <td>
+                    <button type="button" value="{{ .UUID }}" onclick="handleDeleteUser(this)">X</button>
+                </td>
             </tr>
             {{ end }}
             <tbody>

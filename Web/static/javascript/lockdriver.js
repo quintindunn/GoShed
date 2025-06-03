@@ -46,14 +46,12 @@ function resetCards() {
             let codes = []
 
             for (let i = 0; i < rollingCodes.length; i++) {
-                console.log(rollingCodes[i])
                 const code = rollingCodes[i];
                 codes.push([
                     code["code"],
                     code["expiry"] * 1000
                 ]);
             }
-            console.log(codes);
             updateCardsDisplay(codes);
         }
     }

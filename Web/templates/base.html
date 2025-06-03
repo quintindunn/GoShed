@@ -17,7 +17,7 @@
       </div>
       <div class="profile">
         {{ with .CurrentUser }}
-          <p>Hello{{ if .Name }} {{ .Name }}{{ end }}</p>
+          <p>Hello{{ if .Name }}, {{ .Name }}{{ end }}</p>
           <a href="/logout"><p>Logout</p></a>
         {{ end }}
       </div>
@@ -27,13 +27,16 @@
       <h1><a href="/">Pages</a></h1>
       <hr>
       <ul>
-        <li data-active="false"><a href="#logs">Logs</a></li>
-        <li data-active="true"><a href="/locks">Lock</a></li>
-        <li data-active="false"><a href="/users">Users</a></li>
+        <li data-active="{{ .block_logs }}"><a href="#logs">Logs</a></li>
+        <li data-active="{{ .block_locks }}"><a href="/locks">Lock</a></li>
+        <li data-active="{{ .block_users}}"><a href="/users">Users</a></li>
       </ul>
     </div>
     <div class="page-content">
-      {{ block "content" . }}{{ end }}
+      {{ if .block_home }} {{ block "content_home" . }}{{ end }} {{ end }}
+      {{ if .block_locks }} {{ block "content_locks" . }}{{ end }} {{ end }}
+      {{ if .block_login }} {{ block "content_login" . }}{{ end }} {{ end }}
+      {{ if .block_register }} {{ block "content_register" . }}{{ end }} {{ end }}
     </div>
   </main>
 </body>

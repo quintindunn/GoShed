@@ -1,5 +1,65 @@
-{{ define "content" }}
-    <h1>This shouldn't be global, but it is: MUST FIX!</h1>
+{{ define "content_locks" }}
+    <script src="/static/javascript/lockdriver.js" defer></script>
+    <div class="sub-app lock-manager">
+        <h1>Lock Controller</h1>
+        <hr>
+        <h2>Manage Lock</h2>
+        <h3>Current State: <span data-locked="{{ .isLocked }}" id="lock-state-span">{{ if .isLocked }}LOCKED{{ else }}UNLOCKED{{ end}}</span></h3>
+        <div class="controls">
+            <button type="button" id="lock-manager-lock">LOCK</button>
+            <button type="button" id="lock-manager-unlock">UNLOCK</button>
+        </div>
+        <div class="rolling-codes">
+            <hr>
+            <h2>Rolling Codes</h2>
+            <button id="rolling-codes-reset">Reset Codes</button>
+            <div class="code-cards" id="cards-div">
+                {{ range .rollingCodes }}
+                <div class="code-card">
+                    <h2>{{ .code }}</h2>
+                    <p>Expires {{ .expiry }}</p>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+        <hr>
+        <h2>Allocated Codes</h2>
+        <table class="allocated-codes" id="add-user-table">
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Expiration</th>
+            </tr>
+            {{ range .codes }}
+            <tr>
+                <td>{{ .name }}</td>
+                <td>{{ .code }}</td>
+                <td>{{ .expiry }}</td>
+                <td>
+                    <button type="button" value="{{ .UUID }}" onclick="handleDeleteUser(this)">X</button>
+                </td>
+            </tr>
+            {{ end }}
+            <tbody>
+
+            </tbody>
+        </table>
+        <div class="add-user">
+            <div id="error-div" class="error-div" data-hidden="true">
+
+            </div>
+
+            <label for="add-user-name">Name</label>
+            <input type="text" name="name" placeholder="John Doe" id="add-user-name" required>
+
+            <label for="add-user-code">Code</label>
+            <input type="number" name="code" placeholder="4242" id="add-user-code" required>
+
+            <label for="add-user-expiration">Expiration</label>
+            <input type="datetime-local" name="expiration" id="add-user-expiration">
+            <button type="button" id="add-user-btn">Add Code</button>
+        </div>
+    </div>
 {{ end }}
 
 {{ define "locks" }}

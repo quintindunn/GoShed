@@ -32,6 +32,10 @@ func SetupRouter() *gin.Engine {
 		authorized.GET("/", controllers.Page)
 		authorized.GET("/users", controllers.ListUsers)
 		authorized.GET("/locks", controllers.Lock)
+		authorized.POST("/api/lock", controllers.SetLockAPI)
+		authorized.POST("/api/refreshCards", controllers.ResetRollingCodesAPI)
+		authorized.POST("/api/addUserCode", controllers.AddUserCodeAPI)
+		authorized.POST("/api/nullifyUserCode", controllers.NullifyUserCode)
 	}
 
 	return r

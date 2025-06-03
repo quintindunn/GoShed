@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"com.quintindev/WebShed/utils"
 	"errors"
 	"net/http"
 
@@ -29,7 +30,7 @@ func RegisterPage(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, "/")
 		return
 	}
-	c.HTML(http.StatusOK, "register", gin.H{"Error": ""})
+	utils.Render(c, http.StatusOK, "register", gin.H{"Error": ""})
 }
 
 func Register(c *gin.Context) {
@@ -38,13 +39,13 @@ func Register(c *gin.Context) {
 	password := c.PostForm("password")
 
 	if name == "" || email == "" || password == "" {
-		c.HTML(http.StatusBadRequest, "register", gin.H{"Error": "All fields are required"})
+		utils.Render(c, http.StatusBadRequest, "register", gin.H{"Error": "All fields are required"})
 		return
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		c.HTML(http.StatusInternalServerError, "register", gin.H{"Error": "Server error"})
+		utils.Render(c, http.StatusInternalServerError, "register", gin.H{"Error": "Server error"})
 		return
 	}
 
@@ -56,10 +57,10 @@ func Register(c *gin.Context) {
 
 	if err := database.DB.Create(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			c.HTML(http.StatusBadRequest, "register", gin.H{"Error": "Email already in use"})
+			utils.Render(c, http.StatusBadRequest, "register", gin.H{"Error": "Email already in use"})
 			return
 		}
-		c.HTML(http.StatusInternalServerError, "register", gin.H{"Error": "Could not create account"})
+		utils.Render(c, http.StatusInternalServerError, "register", gin.H{"Error": "Could not create account"})
 		return
 	}
 
@@ -71,7 +72,7 @@ func LoginPage(c *gin.Context) {
 		c.Redirect(http.StatusSeeOther, "/")
 		return
 	}
-	c.HTML(http.StatusOK, "login", gin.H{"Error": ""})
+	utils.Render(c, http.StatusOK, "login", gin.H{"Error": ""})
 }
 
 func LoginSubmit(c *gin.Context) {
@@ -84,18 +85,18 @@ func LoginSubmit(c *gin.Context) {
 			c.HTML(http.StatusUnauthorized, "login", gin.H{"Error": "Invalid email or password"})
 			return
 		}
-		c.HTML(http.StatusInternalServerError, "login", gin.H{"Error": "Server error"})
+		utils.Render(c, http.StatusInternalServerError, "login", gin.H{"Error": "Server error"})
 		return
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
-		c.HTML(http.StatusUnauthorized, "login", gin.H{"Error": "Invalid email or password"})
+		utils.Render(c, http.StatusUnauthorized, "login", gin.H{"Error": "Invalid email or password"})
 		return
 	}
 
 	tokenString, err := config.GenerateToken(user.ID)
 	if err != nil {
-		c.HTML(http.StatusInternalServerError, "login", gin.H{"Error": "Could not generate token"})
+		utils.Render(c, http.StatusInternalServerError, "login", gin.H{"Error": "Could not generate token"})
 		return
 	}
 

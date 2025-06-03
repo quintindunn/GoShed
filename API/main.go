@@ -1,9 +1,9 @@
 package main
 
 import (
-	"com.quintindev/WebShed/config"
-	"com.quintindev/WebShed/database"
-	"com.quintindev/WebShed/routes"
+	"com.quintindev/APIShed/config"
+	"com.quintindev/APIShed/database"
+	"com.quintindev/APIShed/routes"
 	"fmt"
 	"log"
 )

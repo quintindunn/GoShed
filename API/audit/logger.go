@@ -19,3 +19,7 @@ func Log(msg string) {
 		fmt.Println("Error creating log:", err)
 	}
 }
+
+func LogInitiator(initiator string, msg string) {
+	Log(fmt.Sprintf("%s | %s", initiator, msg))
+}

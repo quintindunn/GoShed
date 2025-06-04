@@ -36,4 +36,8 @@ func AutoMigrations() {
 	if err := DB.AutoMigrate(&models.AllocatedCode{}); err != nil {
 		log.Fatal("AutoMigrate AllocatedCode failed:", err)
 	}
+
+	if err := DB.AutoMigrate(&models.Log{}); err != nil {
+		log.Fatal("AutoMigrate Logs failed:", err)
+	}
 }

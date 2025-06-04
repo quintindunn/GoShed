@@ -1,0 +1,39 @@
+{{ define "content_logs" }}
+<script src="/static/javascript/logscontroller.js" defer></script>
+<div class="sub-app">
+    <h1>Logs</h1>
+    <hr>
+    <div class="log-box">
+        {{ range .logs }}
+            <div class="log-entry">
+                <p>
+                    <span class="log-date">{{ .Date }}</span> - <span class="log-msg">{{ .Msg }}</span>
+                </p>
+            </div>
+        {{ end }}
+    </div>
+    <input type="hidden" id="cur-pg" value="{{ .currentPage }}">
+    {{ if gt .prevPage 0 }}
+        <button id="prv-pg" value="{{ .prevPage }}">Previous Page</button>
+    {{ end }}
+
+    {{ if lt .nextPage 1 }}
+        <button id="nxt-pg" value="1">Next Page</button>
+    {{ else }}
+        <button id="nxt-pg" value="{{ .nextPage }}">Next Page</button>
+    {{ end }}
+    <p>Results per page:</p>
+    <select id="res-sel">
+        <option value="{{ .resPerPage }}">{{ .resPerPage }}</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="250">250</option>
+        <option value="500">500</option>
+        <option value="1000">1000</option>
+    </select>
+</div>
+{{ end }}
+
+{{ define "logs" }}
+{{ template "base" . }}
+{{ end }}

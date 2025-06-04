@@ -241,3 +241,9 @@ th, td {
 .rolling-codes > .code-cards > .code-card:hover {
     scale: 1;
 }
+
+/* logs.html */
+.log-box {
+    max-height: 70vh;
+    overflow: scroll;
+}

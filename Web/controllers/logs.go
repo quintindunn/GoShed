@@ -81,7 +81,7 @@ func Logs(c *gin.Context) {
 	var formattedLogs []Log
 	for _, log := range logsModel {
 		formattedLogs = append(formattedLogs, Log{
-			Date: log.CreatedAt.Format("01-02-06 3:04 PM"),
+			Date: log.CreatedAt.Format("01-02-06 3:04:05 PM"),
 			Msg:  log.Msg,
 		})
 	}

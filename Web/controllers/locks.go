@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"com.quintindev/WebShed/audit"
 	"com.quintindev/WebShed/database"
 	"com.quintindev/WebShed/hardwareInterface"
 	"com.quintindev/WebShed/models"
@@ -103,13 +104,14 @@ func ResetRollingCodesAPI(c *gin.Context) {
 	}
 
 	var ModelRollingCodes []models.RollingCode
-
+	var newCodesAudit []string
 	for _, c := range codes {
 		ModelRollingCodes = append(ModelRollingCodes, models.RollingCode{
 			Code:      c.Code,
 			Expiry:    c.Expiry,
 			Nullified: false,
 		})
+		newCodesAudit = append(newCodesAudit, c.Code)
 	}
 
 	if err := database.DB.Model(&models.RollingCode{}).Where("nullified = ?", false).Update("nullified", true).Error; err != nil {
@@ -123,6 +125,8 @@ func ResetRollingCodesAPI(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"rollingCodes": codes,
 	})
+
+	audit.LogRefreshRollingCodes(newCodesAudit)
 }
 
 func AddUserCodeAPI(c *gin.Context) {
@@ -178,6 +182,7 @@ func AddUserCodeAPI(c *gin.Context) {
 		UUID:      json.Uuid,
 	}
 
+	audit.LogAddNewCode(json.Name, json.Code, json.Expiry)
 	if err := database.DB.Create(&CodeModel).Error; err != nil {
 		fmt.Println("Error adding code!")
 	}
@@ -199,6 +204,8 @@ func NullifyUserCode(c *gin.Context) {
 	if targetUuid == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID"})
 	}
+
+	audit.LogRemoveCode(targetUuid)
 
 	if err := database.DB.Model(&models.AllocatedCode{}).
 		Where("nullified = ?", false).

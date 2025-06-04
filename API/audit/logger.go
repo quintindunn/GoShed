@@ -23,3 +23,13 @@ func Log(msg string) {
 func LogInitiator(initiator string, msg string) {
 	Log(fmt.Sprintf("%s | %s", initiator, msg))
 }
+
+func NullifyRollingCodes(codes []string) {
+	msg := fmt.Sprintf("Nullified %d rolling codes: %+v", len(codes), codes)
+	LogInitiator("SYSTEM", msg)
+}
+
+func CreateNewRollingCodes(codes []string) {
+	msg := fmt.Sprintf("Created %d rolling codes: %+v", len(codes), codes)
+	LogInitiator("SYSTEM", msg)
+}

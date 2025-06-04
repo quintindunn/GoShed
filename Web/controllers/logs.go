@@ -67,7 +67,7 @@ func Logs(c *gin.Context) {
 	}
 
 	var logsModel []models.Log
-	result := database.DB.Offset(mn).Limit(mx - mn + 1).Find(&logsModel)
+	result := database.DB.Offset(mn).Limit(mx - mn + 1).Order("created_at desc").Find(&logsModel)
 	if result.Error != nil {
 		fmt.Println(result.Error)
 		c.JSON(http.StatusInternalServerError, gin.H{

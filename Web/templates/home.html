@@ -1,5 +1,22 @@
 {{ define "content_home" }}
-    <h1>home ctx</h1>
+    <div class="sub-app home">
+        <h1>Overview</h1>
+        <hr>
+        <h2>Lock</h2>
+        <p>Current State: <span data-locked="{{ .lockLocked }}" id="lock-state-span">{{ if .LockLocked }}LOCKED{{ else }}UNLOCKED{{ end}}</span></p>
+        <hr>
+        <div class="rolling-codes">
+            <h2>Rolling Codes</h2>
+            <div class="code-cards" id="cards-div">
+                {{ range .rollingCodes }}
+                <div class="code-card">
+                    <h2>{{ .code }}</h2>
+                    <p>Expires {{ .expiry }}</p>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+    </div>
 {{ end }}
 
 {{ define "home" }}

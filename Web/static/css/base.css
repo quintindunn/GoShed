@@ -247,3 +247,12 @@ th, td {
     max-height: 70vh;
     overflow: scroll;
 }
+
+/* home.html */
+.home > p > span {
+    color: red;
+}
+
+.home > p > span[data-locked="true"] {
+    color: green;
+}

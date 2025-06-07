@@ -47,8 +47,6 @@ func Logs(c *gin.Context) {
 	}
 	numResInt--
 
-	fmt.Printf("Page: %d numRes: %d", pageInt, numResInt)
-
 	mx := numResInt * pageInt
 	mn := numResInt * (pageInt - 1)
 

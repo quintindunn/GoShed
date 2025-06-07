@@ -69,5 +69,14 @@ func NullifyAllocatedCodes() int {
 		database.DB.Model(&model).Update("nullified", true)
 	}
 
+	var nullifiedCodes [][]string
+
+	for _, model := range expiredModels {
+		nullifiedCodes = append(nullifiedCodes, []string{model.Name, model.Code})
+		database.DB.Model(&model).Update("nullified", true)
+	}
+
+	audit.NullifyAllocatedCodes(nullifiedCodes)
+
 	return nullifiedAllocatedCodesCount
 }

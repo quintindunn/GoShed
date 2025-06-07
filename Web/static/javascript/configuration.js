@@ -79,8 +79,8 @@ function handleConfigurationSave() {
     const payload = {
         changeAdminPin: newAdminPin.value !== "",
         newAdminPin: newAdminPin.value,
-        needAdminPinForUserManagement: needAdminPin,
-        unlockTime: unlockTime.value,
+        needAdminPinForUserManagement: needAdminPin === "true",
+        unlockTime: +unlockTime.value,
         adminPin: ""
     }
 

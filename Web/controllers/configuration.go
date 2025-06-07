@@ -12,3 +12,38 @@ func Configuration(c *gin.Context) {
 		"unlockTime":   utils.QueryConfigValue[int64]("unlock_time"),
 	})
 }
+
+type ConfigurationRequest struct {
+	AdminPin                      string `json:"adminPin"`
+	ChangeAdminPin                bool   `json:"changeAdminPin"`
+	NewAdminPin                   string `json:"newAdminPin"`
+	NeedAdminPinForUserManagement bool   `json:"needAdminPinForUserManagement"`
+	UnlockTime                    int64  `json:"unlockTime"`
+}
+
+func ConfigurationAPI(c *gin.Context) {
+	var json ConfigurationRequest
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":     "Invalid JSON",
+			"errorCode": 1,
+		})
+		return
+	}
+
+	validAdminPin := utils.QueryConfigValue[string]("admin_pin")
+	if validAdminPin != json.AdminPin {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":     "Invalid admin code!",
+			"errorCode": 2,
+		})
+		return
+	}
+
+	if json.ChangeAdminPin {
+		utils.SetConfigValue[string]("admin_pin", json.NewAdminPin)
+	}
+	utils.SetConfigValue[bool]("need_admin_pin_for_user_management", json.NeedAdminPinForUserManagement)
+	utils.SetConfigValue[int64]("unlock_time", json.UnlockTime)
+
+}

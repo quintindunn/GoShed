@@ -216,7 +216,13 @@ function handleAddUser() {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/api/addUserCode");
 
-    xhr.onreadystatechange = () => {updateAuthorizedCode(xhr)}
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 409) {
+            addError(errorDiv, "Code already used!")
+            return
+        }
+        updateAuthorizedCode(xhr)
+    }
 
     xhr.send(JSON.stringify(payload));
 }

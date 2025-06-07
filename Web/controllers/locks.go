@@ -137,6 +137,20 @@ func AddUserCodeAPI(c *gin.Context) {
 		return
 	}
 
+	var foundCodes []models.AllocatedCode
+	database.DB.Model(&models.AllocatedCode{}).
+		Where("nullified = ?", false).
+		Where("code = ?", json.Code).
+		Find(&foundCodes)
+
+	if len(foundCodes) != 0 {
+		c.JSON(http.StatusConflict, gin.H{
+			"error":     "Code already used!",
+			"errorCode": 1,
+		})
+		return
+	}
+
 	json.Expiry /= 1000
 
 	//if (payload.code.length < 4 || payload.code.length > 32) {

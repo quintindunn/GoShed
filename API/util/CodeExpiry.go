@@ -76,7 +76,9 @@ func NullifyAllocatedCodes() int {
 		database.DB.Model(&model).Update("nullified", true)
 	}
 
-	audit.NullifyAllocatedCodes(nullifiedCodes)
+	if len(nullifiedCodes) != 0 {
+		audit.NullifyAllocatedCodes(nullifiedCodes)
+	}
 
 	return nullifiedAllocatedCodesCount
 }

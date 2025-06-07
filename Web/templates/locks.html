@@ -1,6 +1,21 @@
 {{ define "content_locks" }}
     <script src="/static/javascript/lockdriver.js" defer></script>
-    <div class="sub-app lock-manager">
+    <input type="hidden" id="adminPinRequiredForUserManagement" value="{{ .adminPinRequiredForUserManagement }}">
+
+    <div class="admin-pin-prompt" id="admin-pin-div" data-adminprompt="false">
+        <div>
+            <h2>Enter Admin Pin</h2>
+            <div class="admin-pin-err">
+                <p id="admin-pin-err"></p>
+            </div>
+            <label for="admin-pin-input"></label>
+            <input type="number" name="adminPin" id="admin-pin-input" placeholder="Pin">
+            <button type="button" id="admin-pin-btn">Submit</button>
+        </div>
+
+    </div>
+
+    <div class="sub-app lock-manager" id="sub-app-div" data-adminprompt="false">
         <h1>Lock Controller</h1>
         <hr>
         <h2>Manage Lock</h2>

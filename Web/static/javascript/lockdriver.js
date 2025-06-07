@@ -1,7 +1,4 @@
-// State updater
-function updateState() {
-    // Need endpoints setup first!
-}
+let needAdminPinForUserManagement = document.getElementById("adminPinRequiredForUserManagement").value === "true";
 
 
 // Lock toggling
@@ -30,6 +27,70 @@ function postLockState(lock) {
 lockBtn.addEventListener("click", () => {postLockState(true)});
 unlockBtn.addEventListener("click", () => {postLockState(false)});
 
+let unverifiedAdminPin = "";
+let verifiedAdminPin = "";
+
+let adminPinDiv = document.getElementById("admin-pin-div");
+let subAppDiv = document.getElementById("sub-app-div");
+let adminPinInput = document.getElementById("admin-pin-input");
+let adminPinSubmit = document.getElementById("admin-pin-btn");
+let adminPinError = document.getElementById("admin-pin-err");
+
+adminPinSubmit.addEventListener("click", handleAdminPinSubmission)
+
+function promptAdminPin(failed = false) {
+    unverifiedAdminPin = "";
+    adminPinDiv.dataset.adminprompt = "true";
+    subAppDiv.dataset.adminprompt = "true"
+
+    if (failed) {
+        adminPinError.innerText = "Incorrect Pin"
+    }
+
+}
+
+function handleAdminPinSubmission(e) {
+    unverifiedAdminPin = adminPinInput.value;
+    validateAdminPin(unverifiedAdminPin)
+}
+
+function validateAdminPin(pin) {
+    let payload = {
+        pin: pin
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/adminCodeVerification")
+
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+           let data = JSON.parse(xhr.response)
+           if (data["valid"]) {
+               adminPinDiv.dataset.adminprompt = "false";
+               subAppDiv.dataset.adminprompt = "false";
+               verifiedAdminPin = pin;
+               window.onPinVerified(verifiedAdminPin);
+           } else {
+               promptAdminPin(true);
+           }
+        }
+    }
+
+    xhr.send(JSON.stringify(payload))
+}
+
+function getAdminPin() {
+    if (!needAdminPinForUserManagement || verifiedAdminPin !== "") {
+        return Promise.resolve(verifiedAdminPin);
+    }
+
+    return new Promise((resolve) => {
+        window.onPinVerified = (pin) => {
+            verifiedAdminPin = pin;
+            resolve(pin);
+        };
+        promptAdminPin();
+    });
+}
 
 // Rolling codes
 let refreshCardsBtn = document.getElementById("rolling-codes-reset");
@@ -172,7 +233,7 @@ function updateAuthorizedCode(xhr) {
     }
 }
 
-function handleAddUser() {
+async function handleAddUser() {
     const errorDiv = document.getElementById("error-div");
     errorDiv.innerHTML = ``;
 
@@ -191,7 +252,8 @@ function handleAddUser() {
     let payload = {
         name: addUserName.value,
         code: addUserCode.value,
-        expiry: expiry
+        expiry: expiry,
+        adminPin: ""
     }
 
     if (payload.name === "") {
@@ -210,37 +272,46 @@ function handleAddUser() {
     }
 
     if (payload.code.length < 4 || payload.code.length > 32) {
-        addError(errorDiv, "Code must be between 4 and 32.")
+        addError(errorDiv, "Code must be between 4 and 32 digits.")
+        return;
     }
 
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/addUserCode");
+    getAdminPin().then((pin) => {
+        payload.adminPin = pin;
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/addUserCode");
 
-    xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 409) {
-            addError(errorDiv, "Code already used!")
-            return
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 409) {
+                addError(errorDiv, "Code already used!")
+                return
+            }
+            updateAuthorizedCode(xhr)
         }
-        updateAuthorizedCode(xhr)
-    }
 
-    xhr.send(JSON.stringify(payload));
+        xhr.send(JSON.stringify(payload));
+    })
 }
 
 function handleDeleteUser(elem) {
     let uuid_to_rm = elem.value;
 
     let payload = {
-        uuid: uuid_to_rm
+        uuid: uuid_to_rm,
+        adminPin: ""
     }
 
+    getAdminPin().then((pin) => {
+        payload.adminPin = pin;
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/nullifyUserCode");
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/nullifyUserCode");
+        xhr.onreadystatechange = () => {
+            updateAuthorizedCode(xhr)
+        }
 
-    xhr.onreadystatechange = () => {updateAuthorizedCode(xhr)}
-
-    xhr.send(JSON.stringify(payload))
+        xhr.send(JSON.stringify(payload))
+    });
 }
 
 addUserBtn.addEventListener("click", handleAddUser);

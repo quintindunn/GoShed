@@ -1,6 +1,7 @@
 package database
 
 import (
+	"com.quintindev/APIShed/models"
 	"log"
 	"os"
 
@@ -24,11 +25,23 @@ func Init() {
 }
 
 func AutoMigrations() {
-	//if err := DB.AutoMigrate(&models.RollingCode{}); err != nil {
-	//	log.Fatal("AutoMigrate RollingCode failed:", err)
-	//}
-	//
-	//if err := DB.AutoMigrate(&models.AllocatedCode{}); err != nil {
-	//	log.Fatal("AutoMigrate AllocatedCode failed:", err)
-	//}
+	if err := DB.AutoMigrate(&models.Config{}); err != nil {
+		log.Fatal("AutoMigrate Config failed:", err)
+	}
+
+	var count int64
+	DB.Table("configs").Count(&count)
+	if count == 0 {
+		log.Println("No config found, creating...")
+		DB.Exec("INSERT INTO configs DEFAULT VALUES")
+		DB.Table("configs").Count(&count)
+	}
+
+	if count > 1 {
+		log.Fatal("Too many configs!")
+	}
+
+	if count == 0 {
+		log.Fatal("Config creation failed!")
+	}
 }

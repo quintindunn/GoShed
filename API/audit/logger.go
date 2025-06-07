@@ -39,12 +39,12 @@ func NullifyAllocatedCodes(codes [][]string) {
 	LogInitiator("SYSTEM", msg)
 }
 
-func UnlockByAllocatedCode(code models.AllocatedCode) {
+func UnlockByAllocatedCode(code models.AllocatedCode, initiator string) {
 	msg := fmt.Sprintf("Unlocking from user \"%s\", with code: \"%s\"", code.Name, code.Code)
-	LogInitiator("SYSTEM", msg)
+	LogInitiator(initiator, msg)
 }
 
-func UnlockByRollingCode(code models.RollingCode) {
+func UnlockByRollingCode(code models.RollingCode, initiator string) {
 	msg := fmt.Sprintf("Unlocking from rolling code: \"%s\"", code.Code)
-	LogInitiator("SYSTEM", msg)
+	LogInitiator(initiator, msg)
 }

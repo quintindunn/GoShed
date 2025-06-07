@@ -76,11 +76,11 @@ func AttemptUnlock(c *gin.Context) {
 	})
 
 	if len(allocatedCodes) != 0 {
-		audit.UnlockByAllocatedCode(allocatedCodes[0])
+		audit.UnlockByAllocatedCode(allocatedCodes[0], json.Initiator)
 		hardware.HandleCodedUnlock()
 		return
 	} else if len(rollingCodes) != 0 {
-		audit.UnlockByRollingCode(rollingCodes[0])
+		audit.UnlockByRollingCode(rollingCodes[0], json.Initiator)
 		hardware.HandleCodedUnlock()
 		return
 	} else {

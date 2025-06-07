@@ -1,22 +1,16 @@
-package controllers
+package util
 
 import (
-	"com.quintindev/APIShed/util"
-	"com.quintindev/APIShed/util"
-	"github.com/gin-gonic/gin"
+	"com.quintindev/APIShed/audit"
+	"com.quintindev/APIShed/database"
+	"com.quintindev/APIShed/models"
+	"fmt"
+	"log"
+	"math/rand"
+	"time"
 )
 
-func ExpireOldCodes(c *gin.Context) {
-	rollingCodesChanged := util.UpdateExpiredRollingCodes()
-	allocatedCodesChanged := util.NullifyAllocatedCodes()
-
-	c.JSON(200, gin.H{
-		"rollingCodesChanged":   rollingCodesChanged,
-		"allocatedCodesChanged": allocatedCodesChanged,
-	})
-}
-
-func updateExpiredRollingCodes() int {
+func UpdateExpiredRollingCodes() int {
 	unix := time.Now().Unix()
 
 	var expiredModels []models.RollingCode
@@ -61,7 +55,7 @@ func updateExpiredRollingCodes() int {
 	}
 }
 
-func nullifyAllocatedCodes() int {
+func NullifyAllocatedCodes() int {
 	unix := time.Now().Unix()
 
 	var expiredModels []models.AllocatedCode
@@ -70,13 +64,10 @@ func nullifyAllocatedCodes() int {
 		Where("expiry < ?", unix).Find(&expiredModels)
 
 	nullifiedAllocatedCodesCount := len(expiredModels)
-	var nullifiedCodes [][]string
 
 	for _, model := range expiredModels {
-		nullifiedCodes = append(nullifiedCodes, []string{model.Name, model.Code})
 		database.DB.Model(&model).Update("nullified", true)
 	}
-	audit.NullifyAllocatedCodes(nullifiedCodes)
 
 	return nullifiedAllocatedCodesCount
 }

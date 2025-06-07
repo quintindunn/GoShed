@@ -82,18 +82,3 @@ func NullifyAllocatedCodes() int {
 
 	return nullifiedAllocatedCodesCount
 }
-
-func QueryConfigInt64(key string) int64 {
-	var value int64
-
-	err := database.DB.Table("configs").
-		Select(key).
-		Limit(1).
-		Scan(&value).Error
-
-	if err != nil {
-		log.Fatalf("Error getting key \"%s\" from table \"configs\": %+v", key, err)
-	}
-
-	return value
-}

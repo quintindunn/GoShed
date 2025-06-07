@@ -21,6 +21,7 @@ type Code struct {
 	Code   string `json:"code"`
 	Expiry int64  `json:"expiry"`
 	Uuid   string `json:"uuid"`
+	Pin    string `json:"adminPin"`
 }
 
 func Lock(c *gin.Context) {
@@ -60,9 +61,10 @@ func Lock(c *gin.Context) {
 	}
 
 	data := gin.H{
-		"codes":        formattedCodes,
-		"rollingCodes": formattedRollingCodes,
-		"isLocked":     hardwareInterface.GetGetLocked(),
+		"codes":                             formattedCodes,
+		"rollingCodes":                      formattedRollingCodes,
+		"isLocked":                          hardwareInterface.GetGetLocked(),
+		"adminPinRequiredForUserManagement": utils.QueryConfigValue[bool]("need_admin_pin_for_user_management"),
 	}
 
 	utils.Render(c, 200, "locks", data)
@@ -134,6 +136,16 @@ func AddUserCodeAPI(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	validAdminPin := utils.QueryConfigValue[string]("admin_pin")
+	needAdminPin := utils.QueryConfigValue[bool]("need_admin_pin_for_user_management")
+	if needAdminPin && validAdminPin != json.Pin {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":     "Invalid admin pin!",
+			"errorCode": 2,
+		})
 		return
 	}
 
@@ -244,5 +256,27 @@ func NullifyUserCode(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"authorizedCodes": codes,
+	})
+}
+
+type AdminPinSubmission struct {
+	Pin string `json:"pin"`
+}
+
+func ValidateAdminPin(c *gin.Context) {
+	var json AdminPinSubmission
+
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"valid": false,
+			"error": err,
+		})
+		return
+	}
+
+	validAdminPin := utils.QueryConfigValue[string]("admin_pin")
+
+	c.JSON(http.StatusOK, gin.H{
+		"valid": json.Pin == validAdminPin,
 	})
 }

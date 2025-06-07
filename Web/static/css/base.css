@@ -140,10 +140,76 @@ h1 > a {
 }
 
 /* locks.html */
+.admin-pin-prompt[data-adminprompt="true"] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .85);
+    z-index: 100;
+    text-align: center;
+}
+
+.admin-pin-prompt[data-adminprompt="false"] {
+    display: none;
+}
+
+.admin-pin-prompt > div {
+    width: 40vw;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-pin-err {
+    color: red;
+}
+
+.admin-pin-prompt > div > button {
+    width: 40%;
+    padding: .5vh .5vw;
+    margin: 0 auto 1vh;
+    border-radius: 15px;
+    border: 1px solid aqua;
+    background-color: transparent;
+    color: aqua;
+}
+
+.admin-pin-prompt > div > button:hover {
+    cursor: pointer;
+    scale: 1.05;
+}
+
+.admin-pin-prompt > div > input {
+    width: 50%;
+    margin: 0 auto 1vh;
+    padding: .25vh .25vw;
+}
+
+.admin-pin-prompt > div > input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
+.admin-pin-prompt > div > input::-webkit-outer-spin-button,
+.admin-pin-prompt > div > input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
 .sub-app {
     padding: 4vh 4vw;
     background-color: var(--fg-color);
     border-radius: 15px;
+}
+
+.sub-app[data-adminprompt="true"] {
+    display: none;
 }
 
 .lock-manager {

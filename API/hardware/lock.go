@@ -27,7 +27,7 @@ func HandleCodedUnlock() {
 	util.UpdateExpiredRollingCodes()
 
 	SetLockState(false)
-	time.Sleep(time.Duration(util.QueryConfigInt64("unlock_time")) * time.Millisecond)
+	time.Sleep(time.Duration(util.QueryConfigValue[int64]("unlock_time")) * time.Millisecond)
 	SetLockState(true)
 }
 

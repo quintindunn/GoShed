@@ -297,16 +297,21 @@ function handleDeleteUser(elem) {
     let uuid_to_rm = elem.value;
 
     let payload = {
-        uuid: uuid_to_rm
+        uuid: uuid_to_rm,
+        adminPin: ""
     }
 
+    getAdminPin().then((pin) => {
+        payload.adminPin = pin;
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/nullifyUserCode");
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/nullifyUserCode");
+        xhr.onreadystatechange = () => {
+            updateAuthorizedCode(xhr)
+        }
 
-    xhr.onreadystatechange = () => {updateAuthorizedCode(xhr)}
-
-    xhr.send(JSON.stringify(payload))
+        xhr.send(JSON.stringify(payload))
+    });
 }
 
 addUserBtn.addEventListener("click", handleAddUser);

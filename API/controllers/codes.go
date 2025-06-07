@@ -75,10 +75,13 @@ func nullifyAllocatedCodes() int {
 		Where("expiry < ?", unix).Find(&expiredModels)
 
 	nullifiedAllocatedCodesCount := len(expiredModels)
+	var nullifiedCodes [][]string
 
 	for _, model := range expiredModels {
+		nullifiedCodes = append(nullifiedCodes, []string{model.Name, model.Code})
 		database.DB.Model(&model).Update("nullified", true)
 	}
+	audit.NullifyAllocatedCodes(nullifiedCodes)
 
 	return nullifiedAllocatedCodesCount
 }

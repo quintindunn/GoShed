@@ -33,3 +33,8 @@ func CreateNewRollingCodes(codes []string) {
 	msg := fmt.Sprintf("Created %d rolling codes: %+v", len(codes), codes)
 	LogInitiator("SYSTEM", msg)
 }
+
+func NullifyAllocatedCodes(codes [][]string) {
+	msg := fmt.Sprintf("Nullified %d allocated codes: %+v", len(codes), codes)
+	LogInitiator("SYSTEM", msg)
+}

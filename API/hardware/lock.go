@@ -13,7 +13,11 @@ var LockState = LockHardwareState{}
 
 func SetLockState(newState bool) {
 	LockState.Locked = newState
-	audit.LogInitiator("SYSTEM", fmt.Sprintf("Setting lock state to %v", newState))
+	state := "UNLOCKED"
+	if newState {
+		state = "LOCKED"
+	}
+	audit.LogInitiator("SYSTEM", fmt.Sprintf("Setting lock state to %s", state))
 }
 
 func GetLockedState() bool {

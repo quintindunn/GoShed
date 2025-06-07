@@ -43,8 +43,6 @@ type UnlockRequest struct {
 }
 
 func AttemptUnlock(c *gin.Context) {
-	// Refresh codes
-
 	var json UnlockRequest
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -79,9 +77,11 @@ func AttemptUnlock(c *gin.Context) {
 
 	if len(allocatedCodes) != 0 {
 		audit.UnlockByAllocatedCode(allocatedCodes[0])
+		hardware.HandleCodedUnlock()
 		return
 	} else if len(rollingCodes) != 0 {
 		audit.UnlockByRollingCode(rollingCodes[0])
+		hardware.HandleCodedUnlock()
 		return
 	} else {
 		c.JSON(http.StatusInternalServerError, gin.H{

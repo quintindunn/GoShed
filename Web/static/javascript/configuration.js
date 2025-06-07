@@ -92,7 +92,7 @@ function handleConfigurationSave() {
         xhr.open("POST", "/api/configuration");
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                console.log("Configured!");
+                window.location = window.location
             }
         };
         xhr.send(JSON.stringify(payload))

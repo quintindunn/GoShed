@@ -33,3 +33,18 @@ func CreateNewRollingCodes(codes []string) {
 	msg := fmt.Sprintf("Created %d rolling codes: %+v", len(codes), codes)
 	LogInitiator("SYSTEM", msg)
 }
+
+func NullifyAllocatedCodes(codes [][]string) {
+	msg := fmt.Sprintf("Nullified %d allocated codes: %+v", len(codes), codes)
+	LogInitiator("SYSTEM", msg)
+}
+
+func UnlockByAllocatedCode(code models.AllocatedCode) {
+	msg := fmt.Sprintf("Unlocking from user \"%s\", with code: \"%s\"", code.Name, code.Code)
+	LogInitiator("SYSTEM", msg)
+}
+
+func UnlockByRollingCode(code models.RollingCode) {
+	msg := fmt.Sprintf("Unlocking from rolling code: \"%s\"", code.Code)
+	LogInitiator("SYSTEM", msg)
+}

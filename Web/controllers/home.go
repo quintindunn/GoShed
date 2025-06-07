@@ -23,7 +23,7 @@ func Page(c *gin.Context) {
 		})
 	}
 	data := gin.H{
-		"lockLocked":   hardwareInterface.GetGetLocked(),
+		"isLocked":     hardwareInterface.GetGetLocked(),
 		"rollingCodes": RollingCodes,
 	}
 	utils.Render(c, 200, "home", data)

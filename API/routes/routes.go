@@ -13,6 +13,7 @@ func SetupRouter() *gin.Engine {
 
 	r.POST("/api/setlock", controllers.SetLock)
 	r.GET("/api/getlocked", controllers.GetLocked)
+	r.POST("/api/unlock", controllers.AttemptUnlock)
 
 	r.GET("/api/expireoldcodes", controllers.ExpireOldCodes)
 

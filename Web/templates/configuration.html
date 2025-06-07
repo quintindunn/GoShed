@@ -1,0 +1,31 @@
+{{ define "content_configuration" }}
+<script src="/static/javascript/configuration.js" defer></script>
+<div class="sub-app configuration">
+  <h1>Configuration</h1>
+  <hr>
+  <div class="settings">
+    <label for="admin-pin">New Admin Pin</label>
+    <input type="text" id="admin-pin" placeholder="8888">
+
+    <label for="need-admin-pin">Need Admin Pin For User Management</label>
+    <select id="need-admin-pin">
+      {{ if .needAdminPin }}
+        <option value="true">True</option>
+        <option value="false">False</option>
+      {{ else }}
+        <option value="false">False</option>
+        <option value="true">True</option>
+      {{ end }}
+    </select>
+
+    <label for="unlock-time">Unlock Time (ms)</label>
+    <input type="number" id="unlock-time" placeholder="8000" value="{{ .unlockTime }}">
+
+    <button id="configuration-save">Save</button>
+  </div>
+</div>
+{{ end }}
+
+{{ define "configuration" }}
+{{ template "base" . }}
+{{ end }}

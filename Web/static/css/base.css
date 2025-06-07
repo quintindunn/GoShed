@@ -322,3 +322,33 @@ th, td {
 .home > p > span[data-locked="true"] {
     color: green;
 }
+
+/* configuration.html */
+.configuration {
+    display: flex;
+    flex-direction: column;
+}
+
+.configuration > hr {
+    width: 100%;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings > input, .settings > select {
+    margin-bottom: 2vh;
+    width: 10%;
+}
+
+.settings > button {
+    width: 30%;
+    margin: 0 auto;
+    padding: .5vh .5vw;
+    border-radius: 15px;
+    border: 1px solid aqua;
+    color: aqua;
+    background-color: transparent;
+}

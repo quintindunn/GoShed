@@ -29,15 +29,17 @@
       <ul>
         <li data-active="{{ .block_logs }}"><a href="/logs">Logs</a></li>
         <li data-active="{{ .block_locks }}"><a href="/locks">Lock</a></li>
+        <li data-active="{{ .block_configuration }}"><a href="/configuration">Configuration</a></li>
       </ul>
     </div>
     <div class="page-content">
-      {{ if .block_home }} {{ block "content_home" . }}{{ end }} {{ end }}
-      {{ if .block_locks }} {{ block "content_locks" . }}{{ end }} {{ end }}
-      {{ if .block_logs }} {{ block "content_logs" . }}{{ end }} {{ end }}
-      {{ if .block_login }} {{ block "content_login" . }}{{ end }} {{ end }}
-      {{ if .block_register }} {{ block "content_register" . }}{{ end }} {{ end }}
-      {{ if .block_register }} {{ block "content_register" . }}{{ end }} {{ end }}
+      {{ if .block_configuration }} {{block "content_configuration" . }} {{ end }} {{ end }}
+      {{ if .block_home }} {{ block "content_home" . }} {{ end }} {{ end }}
+      {{ if .block_locks }} {{ block "content_locks" . }} {{ end }} {{ end }}
+      {{ if .block_logs }} {{ block "content_logs" . }} {{ end }} {{ end }}
+      {{ if .block_login }} {{ block "content_login" . }} {{ end }} {{ end }}
+      {{ if .block_register }} {{ block "content_register" . }} {{ end }} {{ end }}
+      {{ if .block_register }} {{ block "content_register" . }} {{ end }} {{ end }}
     </div>
   </main>
 </body>

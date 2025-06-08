@@ -19,3 +19,26 @@ func QueryConfigValue[T any](key string) T {
 
 	return value
 }
+
+func SetConfigValue[T any](column string, value T) {
+	var row map[string]interface{}
+	err := database.DB.Table("configs").
+		Select("id").
+		Limit(1).
+		Find(&row).Error
+
+	if err != nil {
+		log.Fatalf("Error fetching first config row: %+v", err)
+	}
+	if row["id"] == nil {
+		log.Fatalf("No rows found in configs table")
+	}
+
+	err = database.DB.Table("configs").
+		Where("id = ?", row["id"]).
+		Update(column, value).Error
+
+	if err != nil {
+		log.Fatalf("Error updating column %q: %+v", column, err)
+	}
+}

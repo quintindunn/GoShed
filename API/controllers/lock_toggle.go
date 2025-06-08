@@ -25,7 +25,7 @@ func SetLock(c *gin.Context) {
 	hardware.SetLockState(json.State)
 
 	c.JSON(http.StatusOK, gin.H{
-		"newState": hardware.LockState.Locked,
+		"newState": hardware.GetLockedState(),
 	})
 }
 

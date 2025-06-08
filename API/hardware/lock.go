@@ -7,18 +7,12 @@ import (
 	"time"
 )
 
-type LockHardwareState struct {
-	Locked bool
-}
-
-var LockState = LockHardwareState{}
-
 func SetLockState(newState bool) {
-	LockState.Locked = newState
 	state := "UNLOCKED"
 	if newState {
 		state = "LOCKED"
 	}
+	util.SetConfigValue[bool]("lock_state", newState)
 	audit.LogInitiator("SYSTEM", fmt.Sprintf("Setting lock state to %s", state))
 }
 
@@ -32,5 +26,5 @@ func HandleCodedUnlock() {
 }
 
 func GetLockedState() bool {
-	return LockState.Locked
+	return util.QueryConfigValue[bool]("lock_state")
 }

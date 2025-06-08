@@ -3,7 +3,9 @@ package main
 import (
 	"com.quintindev/APIShed/config"
 	"com.quintindev/APIShed/database"
+	"com.quintindev/APIShed/hardware"
 	"com.quintindev/APIShed/routes"
+	"com.quintindev/APIShed/util"
 	"fmt"
 	"log"
 )
@@ -20,6 +22,8 @@ func main() {
 
 	fmt.Println("Setting up router.")
 	router := routes.SetupRouter()
+
+	hardware.SetLockState(util.QueryConfigValue[bool]("lock_state"))
 
 	fmt.Println("Starting Server on port: " + cfg.Port)
 	err := router.Run(":" + cfg.Port)

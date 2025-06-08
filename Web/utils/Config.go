@@ -21,10 +21,9 @@ func QueryConfigValue[T any](key string) T {
 }
 
 func SetConfigValue[T any](column string, value T) {
-	// Fetch the first row to get a primary key or full row
 	var row map[string]interface{}
 	err := database.DB.Table("configs").
-		Select("id"). // or whatever the primary key is
+		Select("id").
 		Limit(1).
 		Find(&row).Error
 
@@ -35,7 +34,6 @@ func SetConfigValue[T any](column string, value T) {
 		log.Fatalf("No rows found in configs table")
 	}
 
-	// Update the desired column in that row
 	err = database.DB.Table("configs").
 		Where("id = ?", row["id"]).
 		Update(column, value).Error

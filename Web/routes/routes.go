@@ -10,6 +10,7 @@ func SetupRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.Use(middleware.Logger())
+	r.Use(middleware.VerifyBackendAPI())
 
 	r.Static("/static", "./static")
 

@@ -63,6 +63,31 @@ func GetJSON(url string) any {
 	return result
 }
 
+func GetJSONError(url string) (any, error) {
+	url = baseBackendAddr + url
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer func(Body io.ReadCloser) {
+		if cerr := Body.Close(); cerr != nil {
+			log.Println("error closing response body:", cerr)
+		}
+	}(resp.Body)
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var result any
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 func PostSetLock(state bool) {
 	backendPayload := map[string]bool{
 		"state": state,

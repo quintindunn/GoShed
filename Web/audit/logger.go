@@ -41,3 +41,8 @@ func LogRemoveCode(targetUUID string) {
 	msg := fmt.Sprintf("SYSTEM | Removing code \"%s\"!", allocatedCodes[0].Code)
 	Log(msg)
 }
+
+func LogNewConfiguration(configJsonString string) {
+	msg := fmt.Sprintf("SYSTEM | New Config: %+v", configJsonString)
+	Log(msg)
+}

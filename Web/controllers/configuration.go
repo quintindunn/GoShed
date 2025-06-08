@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"com.quintindev/WebShed/audit"
 	"com.quintindev/WebShed/utils"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -19,6 +21,11 @@ type ConfigurationRequest struct {
 	NewAdminPin                   string `json:"newAdminPin"`
 	NeedAdminPinForUserManagement bool   `json:"needAdminPinForUserManagement"`
 	UnlockTime                    int64  `json:"unlockTime"`
+}
+type ConfigurationLog struct {
+	ChangeAdminPin                bool  `json:"changeAdminPin"`
+	NeedAdminPinForUserManagement bool  `json:"needAdminPinForUserManagement"`
+	UnlockTime                    int64 `json:"unlockTime"`
 }
 
 func ConfigurationAPI(c *gin.Context) {
@@ -39,6 +46,13 @@ func ConfigurationAPI(c *gin.Context) {
 		})
 		return
 	}
+
+	confLog := ConfigurationLog{
+		ChangeAdminPin:                json.ChangeAdminPin,
+		NeedAdminPinForUserManagement: json.NeedAdminPinForUserManagement,
+		UnlockTime:                    json.UnlockTime,
+	}
+	audit.LogNewConfiguration(fmt.Sprintf("%+v", confLog))
 
 	if json.ChangeAdminPin {
 		utils.SetConfigValue[string]("admin_pin", json.NewAdminPin)

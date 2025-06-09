@@ -34,6 +34,9 @@
     <label for="unlock-time">Unlock Time (ms)</label>
     <input type="number" id="unlock-time" placeholder="8000" value="{{ .unlockTime }}">
 
+    <label for="nullification-interval">Code Expiration Check Interval (ms)</label>
+    <input type="number" id="nullification-interval" placeholder="5000" value="{{ .codeExpirationCheckInterval }}">
+
     <button id="configuration-save">Save</button>
   </div>
 </div>

@@ -8,4 +8,5 @@ type Config struct {
 	NeedAdminPinForUserManagement bool   `gorm:"not null;default:true"`
 	UnlockTime                    int64  `gorm:"not null;default:8000"`
 	LockState                     bool   `gorm:"not null;default:false"`
+	CodeExpirationCheckInterval   int64  `gorm:"not null;default:5000"`
 }

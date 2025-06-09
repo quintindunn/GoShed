@@ -10,8 +10,9 @@ import (
 
 func Configuration(c *gin.Context) {
 	utils.Render(c, http.StatusOK, "configuration", gin.H{
-		"needAdminPin": utils.QueryConfigValue[bool]("need_admin_pin_for_user_management"),
-		"unlockTime":   utils.QueryConfigValue[int64]("unlock_time"),
+		"needAdminPin":                utils.QueryConfigValue[bool]("need_admin_pin_for_user_management"),
+		"unlockTime":                  utils.QueryConfigValue[int64]("unlock_time"),
+		"codeExpirationCheckInterval": utils.QueryConfigValue[int64]("code_expiration_check_interval"),
 	})
 }
 
@@ -21,11 +22,13 @@ type ConfigurationRequest struct {
 	NewAdminPin                   string `json:"newAdminPin"`
 	NeedAdminPinForUserManagement bool   `json:"needAdminPinForUserManagement"`
 	UnlockTime                    int64  `json:"unlockTime"`
+	CodeExpirationCheckInterval   int64  `json:"codeExpirationCheckInterval"`
 }
 type ConfigurationLog struct {
 	ChangeAdminPin                bool  `json:"changeAdminPin"`
 	NeedAdminPinForUserManagement bool  `json:"needAdminPinForUserManagement"`
 	UnlockTime                    int64 `json:"unlockTime"`
+	CodeExpirationCheckInterval   int64 `json:"codeExpirationCheckInterval"`
 }
 
 func ConfigurationAPI(c *gin.Context) {
@@ -51,6 +54,7 @@ func ConfigurationAPI(c *gin.Context) {
 		ChangeAdminPin:                json.ChangeAdminPin,
 		NeedAdminPinForUserManagement: json.NeedAdminPinForUserManagement,
 		UnlockTime:                    json.UnlockTime,
+		CodeExpirationCheckInterval:   json.CodeExpirationCheckInterval,
 	}
 	audit.LogNewConfiguration(fmt.Sprintf("%+v", confLog))
 
@@ -59,5 +63,6 @@ func ConfigurationAPI(c *gin.Context) {
 	}
 	utils.SetConfigValue[bool]("need_admin_pin_for_user_management", json.NeedAdminPinForUserManagement)
 	utils.SetConfigValue[int64]("unlock_time", json.UnlockTime)
+	utils.SetConfigValue[int64]("code_expiration_check_interval", json.CodeExpirationCheckInterval)
 
 }

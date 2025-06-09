@@ -5,10 +5,9 @@ import (
 	"time"
 )
 
-const nullificationCooldown = 10 * time.Second
-
 func Manager() {
-	ticker := time.NewTicker(nullificationCooldown)
+	var nullificationCooldown = util.QueryConfigValue[int64]("code_expiration_check_interval")
+	ticker := time.NewTicker(time.Duration(nullificationCooldown) * time.Millisecond)
 	defer ticker.Stop()
 
 	for {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"com.quintindev/APIShed/config"
+	"com.quintindev/APIShed/cron"
 	"com.quintindev/APIShed/database"
 	"com.quintindev/APIShed/hardware"
 	"com.quintindev/APIShed/routes"
@@ -24,6 +25,8 @@ func main() {
 	router := routes.SetupRouter()
 
 	hardware.SetLockState(util.QueryConfigValue[bool]("lock_state"))
+
+	go cron.Manager()
 
 	fmt.Println("Starting Server on port: " + cfg.Port)
 	err := router.Run(":" + cfg.Port)

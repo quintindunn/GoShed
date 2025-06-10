@@ -19,10 +19,10 @@
         <h1>Lock Controller</h1>
         <hr>
         <h2>Manage Lock</h2>
-        <h3>Current State: <span data-locked="{{ .isLocked }}" id="lock-state-span">{{ if .isLocked }}LOCKED{{ else }}UNLOCKED{{ end}}</span></h3>
+        <h3>Current State: <span data-armed="{{ .isArmed }}" id="lock-state-span">{{ if .isArmed }}ARMED{{ else }}UNARMED{{ end}}</span></h3>
         <div class="controls">
-            <button type="button" id="lock-manager-lock">LOCK</button>
-            <button type="button" id="lock-manager-unlock">UNLOCK</button>
+            <button type="button" id="lock-manager-lock">ARM</button>
+            <button type="button" id="lock-manager-unlock">DISARM</button>
         </div>
         <div class="rolling-codes">
             <hr>

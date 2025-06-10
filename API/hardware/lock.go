@@ -8,9 +8,9 @@ import (
 )
 
 func SetLockState(newState bool) {
-	state := "UNLOCKED"
+	state := "UNARMED"
 	if newState {
-		state = "LOCKED"
+		state = "ARMED"
 	}
 	util.SetConfigValue[bool]("lock_state", newState)
 	audit.LogInitiator("SYSTEM", fmt.Sprintf("Setting lock state to %s", state))
@@ -25,6 +25,6 @@ func HandleCodedUnlock() {
 	SetLockState(true)
 }
 
-func GetLockedState() bool {
+func GetArmedState() bool {
 	return util.QueryConfigValue[bool]("lock_state")
 }

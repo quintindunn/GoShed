@@ -219,7 +219,7 @@ h1 > a {
     color: red;
 }
 
-.lock-manager > h3 > span[data-locked="true"] {
+.lock-manager > h3 > span[data-armed="true"] {
     color: green;
 }
 
@@ -319,7 +319,7 @@ th, td {
     color: red;
 }
 
-.home > p > span[data-locked="true"] {
+.home > p > span[data-armed="true"] {
     color: green;
 }
 

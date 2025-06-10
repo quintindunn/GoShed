@@ -95,8 +95,8 @@ func PostSetLock(state bool) {
 	PostJSON("/api/setlock", backendPayload)
 }
 
-func GetGetLocked() bool {
-	data := GetJSON("/api/getlocked")
+func GetGetArmed() bool {
+	data := GetJSON("/api/getarmed")
 	obj, ok := data.(map[string]interface{})
 	if !ok {
 		log.Fatal("unexpected JSON structure")

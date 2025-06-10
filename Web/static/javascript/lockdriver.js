@@ -8,7 +8,7 @@ let unlockBtn = document.getElementById("lock-manager-unlock");
 
 function postLockState(lock) {
     let payload = {
-        setLocked: lock
+        setArmed: lock
     };
 
     const xhr = new XMLHttpRequest();
@@ -16,8 +16,8 @@ function postLockState(lock) {
 
     xhr.onreadystatechange = () => {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            lockStateElem.innerText = lock ? "LOCKED" : "UNLOCKED"
-            lockStateElem.dataset.locked = lock ? "true" : "false"
+            lockStateElem.innerText = lock ? "ARMED" : "UNARMED"
+            lockStateElem.dataset.armed = lock ? "true" : "false"
         }
     };
     xhr.setRequestHeader("Content-Type", "Application/json;charset=UTF-8");

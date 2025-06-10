@@ -3,7 +3,7 @@
         <h1>Overview</h1>
         <hr>
         <h2>Lock</h2>
-        <p>Current State: <span data-locked="{{ .isLocked }}" id="lock-state-span">{{ if .isLocked }}LOCKED{{ else }}UNLOCKED{{ end}}</span></p>
+        <p>Current State: <span data-armed="{{ .isArmed }}" id="lock-state-span">{{ if .isArmed }}ARMED{{ else }}UNARMED{{ end}}</span></p>
         <hr>
         <div class="rolling-codes">
             <h2>Rolling Codes</h2>

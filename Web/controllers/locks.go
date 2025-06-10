@@ -63,7 +63,7 @@ func Lock(c *gin.Context) {
 	data := gin.H{
 		"codes":                             formattedCodes,
 		"rollingCodes":                      formattedRollingCodes,
-		"isLocked":                          hardwareInterface.GetGetLocked(),
+		"isArmed":                           hardwareInterface.GetGetArmed(),
 		"adminPinRequiredForUserManagement": utils.QueryConfigValue[bool]("need_admin_pin_for_user_management"),
 	}
 
@@ -71,7 +71,7 @@ func Lock(c *gin.Context) {
 }
 
 type SetLockRequest struct {
-	SetLocked bool `json:"setLocked"`
+	SetArmed bool `json:"setArmed"`
 }
 
 func SetLockAPI(c *gin.Context) {
@@ -82,10 +82,10 @@ func SetLockAPI(c *gin.Context) {
 		return
 	}
 
-	hardwareInterface.PostSetLock(json.SetLocked)
+	hardwareInterface.PostSetLock(json.SetArmed)
 
 	c.JSON(200, gin.H{
-		"isLocked": json.SetLocked,
+		"isArmed": json.SetArmed,
 	})
 }
 

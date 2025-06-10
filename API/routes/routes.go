@@ -12,9 +12,9 @@ func SetupRouter() *gin.Engine {
 	r.Use(middleware.Logger())
 
 	r.GET("/ping", controllers.Ping)
-	
+
 	r.POST("/api/setlock", controllers.SetLock)
-	r.GET("/api/getlocked", controllers.GetLocked)
+	r.GET("/api/getarmed", controllers.GetArmed)
 	r.POST("/api/unlock", controllers.AttemptUnlock)
 
 	r.GET("/api/expireoldcodes", controllers.ExpireOldCodes)

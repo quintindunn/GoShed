@@ -25,15 +25,15 @@ func SetLock(c *gin.Context) {
 	hardware.SetLockState(json.State)
 
 	c.JSON(http.StatusOK, gin.H{
-		"newState": hardware.GetLockedState(),
+		"newState": hardware.GetArmedState(),
 	})
 }
 
-func GetLocked(c *gin.Context) {
-	isLocked := hardware.GetLockedState()
+func GetArmed(c *gin.Context) {
+	isArmed := hardware.GetArmedState()
 
 	c.JSON(http.StatusOK, gin.H{
-		"state": isLocked,
+		"state": isArmed,
 	})
 }
 

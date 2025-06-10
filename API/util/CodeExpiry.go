@@ -34,7 +34,7 @@ func UpdateExpiredRollingCodes() int {
 		str := fmt.Sprintf("%06d", num) // zero-padded string
 		ModelRollingCodes = append(ModelRollingCodes, models.RollingCode{
 			Code:      str,
-			Expiry:    now.Unix() + 86400,
+			Expiry:    now.Unix() + QueryConfigValue[int64]("rolling_code_lifespan_seconds"),
 			Nullified: false,
 		})
 		newCodes = append(newCodes, str)

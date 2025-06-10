@@ -101,7 +101,7 @@ func ResetRollingCodesAPI(c *gin.Context) {
 		codes = append(codes, Code{
 			Name:   "",
 			Code:   str,
-			Expiry: now.Unix() + 86400,
+			Expiry: now.Unix() + utils.QueryConfigValue[int64]("rolling_code_lifespan_seconds"),
 		})
 	}
 

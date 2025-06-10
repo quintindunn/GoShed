@@ -3,6 +3,7 @@ const needAdminPinSelector = document.getElementById("need-admin-pin");
 let needAdminPin = document.getElementById("base-need-admin-pin").value === "true";
 const unlockTime = document.getElementById("unlock-time");
 const nullificationInterval = document.getElementById("nullification-interval");
+const rollingCodeLifespan = document.getElementById("rolling-code-lifespan");
 
 const configurationSave = document.getElementById("configuration-save");
 
@@ -83,6 +84,7 @@ function handleConfigurationSave() {
         needAdminPinForUserManagement: needAdminPin === "true",
         unlockTime: +unlockTime.value,
         codeExpirationCheckInterval: +nullificationInterval.value,
+        rollingCodeLifespan: +rollingCodeLifespan.value,
         adminPin: ""
     }
 
